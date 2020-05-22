@@ -1,5 +1,14 @@
-Replace W2 with W0 
+#Replace W2 with W0 
 pd_df2 <- data.frame(lapply(pd_df, function(x) {
                   gsub("W2", "W", x)
               }))
-pd_df2
+str(pd_df2)
+#note that this will change all the column to chr object, which is not ideal if that's not the case.
+
+Replace W2 with W0 for a specific column (the sample time) 
+library(stringr)
+pd_df4 <-pd_df
+pd_df4$Sample = str_replace(pd_df4$Sample,"W2","W0")
+str(pd_df4)
+#this will not affect other columns
+
