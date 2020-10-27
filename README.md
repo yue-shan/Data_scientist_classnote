@@ -1,6 +1,5 @@
 # Data_scientist_classnote
 
-Area covers: 
 1. Data import and cleaning
    1) data impoort 
    2) data cleaning 
