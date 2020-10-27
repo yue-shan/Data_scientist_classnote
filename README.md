@@ -1,7 +1,7 @@
 # Data_scientist_classnote
 
 1. Data import and cleaning
-   1) data impoort 
+   1) data import 
    2) data cleaning 
 2. Working with dataframe
    1) dplyr 
