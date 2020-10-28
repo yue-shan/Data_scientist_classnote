@@ -16,3 +16,4 @@
    2) supervised learning - modeling and regression
    3) unsupervised learning- cluster
    4) unsupervised learning - PCA
+1-3 use mostly packages in tidyverse and can install.packages("tidyverse") https://www.tidyverse.org/
