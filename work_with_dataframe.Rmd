@@ -1,0 +1,50 @@
+---
+title: "Work with dataframe"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## access cells, select columns, filter rows, add new columns, calculate and summarize data.
+```{r}
+library(base)#default loading
+rownames()
+colnames()
+rowSums(x, na.rm=F) 
+colSums(x, na.rm=F)
+factor(df$column1,ordered=T, levels= c("low", "mid", "high"))
+summary(as.factor(df$column1))
+
+#piping 
+library(dplyr)
+arrange(df, A,C,D)
+select(df, A:E)
+rename(df, A, new_A)
+filter(df, columnA=="xx", columnB %in% c("X","Y"))
+mutate(df, columnA_B= A+B)
+count(df, columnA, weight=B, sort=T, name='n')
+top_n(df,n)
+group_by(A,B)
+ungroup()
+summarise(sumA=sum(A), averageB=mean(B))
+# all the above verb can be linked with pipe %>%.
+```
+## data joining
+
+You can include R code in the document as follows:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
