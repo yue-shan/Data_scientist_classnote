@@ -83,3 +83,48 @@ ddply(df, .(df$A, df$B), sum)
 #split dataframe, apply function and return results in a dataframe.
 ```
 
+#work with date 
+
+##date is a special data type. str("2020-10-21) is a string, as.Date("2020-10-21") is a date. 
+```{r}
+library(readr)
+
+Sys.Date() #today's date
+as.POSIXct("2020-10-21 11:40:00", tz="America/Chicago")
+Sys.time()
+Sys.timezone()
+
+library(lubridate)
+today()
+now()
+ymd("2010 Oct 21th")
+mdy("10-21-2020")
+dmy_hm("21st October 2020 12:00")
+parse_date_time("Monday June 1st 2010 at 5pm", order="AmdyIp") #A is week of the day, I indicates 12 hour time, p is pm.
+make_date(year="",month="", date="")
+
+#extract partial information
+year()
+month()
+hour()
+tz()
+day()
+yday()
+wday()
+
+#a period can also be save and used for calculating dates, eg
+period_1<- days(3) + hours(2)
+today()+1:10*period_1 #returns a vector of 10, a time series
+
+ymd("2020-01-31") %m+% months(1) # returns 2020-02-29
+ymd("2020-01-31") + months(1) #returns NA since there is no 31th in Feb. 
+
+#interval dates
+interval(date1, date2) #returns an interval of dates
+
+#Date Stamp 
+date_stamp_review <- stamp("The work is reviewed on Saturday, Jan 1, 2000")
+date_stamp_review(today())
+#will return "The work is reviewed on xxxx (today's date following the above format)
+
+```
