@@ -7,7 +7,7 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## access cells, select columns, filter rows, add new columns, calculate and summarize data.
+## basic characteristics of dataframe
 ```{r}
 library(base)#default loading
 rownames()
@@ -16,8 +16,10 @@ rowSums(x, na.rm=F)
 colSums(x, na.rm=F)
 factor(df$column1,ordered=T, levels= c("low", "mid", "high"))
 summary(as.factor(df$column1))
+```
 
-#piping 
+#piping:select columns, filter rows, add new columns, calculate and summarize data
+```{r}
 library(dplyr)
 arrange(df, A,C,D)
 select(df, A:E)
@@ -35,15 +37,15 @@ summarise(sumA=sum(A), averageB=mean(B))
 
 You can include R code in the document as follows:
 
-```{r cars}
+```{r}
 summary(cars)
 ```
 
-## Including Plots
+## apply function to a dataframe
 
 You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
+```{r }
 plot(pressure)
 ```
 
