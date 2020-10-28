@@ -33,20 +33,53 @@ ungroup()
 summarise(sumA=sum(A), averageB=mean(B))
 # all the above verb can be linked with pipe %>%.
 ```
+
 ## data joining
 
-You can include R code in the document as follows:
-
+Join different dataframes or reshape the same one 
 ```{r}
-summary(cars)
+library(dplyr)
+#df_1<A,B,C
+#df_2<A,C,C,D
+
+inner_join(x, y, by = c("x_A","y_A"), suffix = c(".x", ".y")) #A,C,C
+left_join(x, y,by = c("x_A","y_A"), suffix = c(".x", ".y")) #A,B,C
+right_join(x, y, by = NULL, suffix = c(".x", ".y"))#A,C,C,D
+full_join(x, y, by = NULL, suffix = c(".x", ".y"))#A,B,C,C,D
+semi_join(x, y, by = NULL)#A,C
+anti_join(x, y, by = NULL)#B,D
+
+#A semi join differs from an inner join because an inner join will return one row of x for each matching row of y, where a semi join will never duplicate rows of x.
+
+library(tidyr)
+pivot_wider(df,id_cols=sampel_id, names_from = OTU, values_from = Abundance)
+#turn a long table into a wide table (breakdown OTU, each OTU becomes a new column, the value is the abundance)
+pivot_longer(df, cols= 3:7, names_to = "OTU", values_to = Abundance)
+pivot_longer(df, cols=starts_with("Day"), names_to="Day_of_treatment",values_to="rank")
 ```
 
 ## apply function to a dataframe
 
-You can also embed plots, for example:
+```apply(x, dimension, function)```can apply a function to a dataframe. dimension=1 applies to rows, dimension=2 applies to columns.
 
 ```{r }
-plot(pressure)
+library(plyr)
+apply(df, 2, mean) #same as colMeans(df)
+#apply applies to dataframe, needs to specify row or column
+lapply(list, sum)
+#lapply applies to every element of the list and returns a list
+sapply(list, sum)
+#sapply also applies to every element of the list, it returns simplified data, e.g., if returns one element each list, it will be turned into a vector instead of a list.
+split(df, df$factor_column, drop=F)
+#split can split a dataframe into a list of smaller dataframe. Often used with sapply. For example:
+
+t.test_pvalue<- function(df, a,f) {
+  l_ttest<-t.test(df[[a]]~df[[f]])
+  return(l_ttest[["p.value"]])
+}
+sapply(split(pd, pd$Source), t.test_pvalue, a="Abundnance",f="Treatment")
+
+ddply(df, .(df$A, df$B), sum)
+#split dataframe, apply function and return results in a dataframe.
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
