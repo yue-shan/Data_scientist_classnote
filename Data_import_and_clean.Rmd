@@ -1,0 +1,99 @@
+---
+title: "Data import and cleaning"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Import data to R
+Most common type of data are flatfiles, meaning two dimensional data that represent a dataframe. R could take data from .csv, .tsv, .txt, .xlsx etc, or it could directly get data from database. The most simple cases could be handled by the default ```utils``` package
+
+```{r }
+library(utils)
+
+read.csv("file.csv", stringsAsFactors = T) # default 
+#same as the following
+read.table("file.csv", header=T, sep=",", stringsAsFactors = T ) #header=T meaning the first row is column name
+
+read.delim("file.txt", stringsAsFactors = T) #default
+#same as the following
+read.table("file.txt", header=T, sep="\t", stringsAsFactors=T) 
+
+#read.table allows you to specify separtor, read.csv and read.delim are both specific cases.
+
+read.table("file.txt", header=F, col.names= c("x", "y"),colClasses = c("factor", "numeric"))
+#read.csv and read.delim using "." as decimal point, you can use read.csv2 and read.delim2 if decimal point is ","
+
+#the package also supports direct import from https, eg
+url <- "http://s3.amazonaws.com/assets.datacamp.com/course/importing_data_into_r/cities.csv"
+read.csv(url)
+
+```
+
+## Other libraries
+
+Other commonly use libraries including readr, data.table(good for very large file), fread(can specify rows and columns to load), readxl, gdata, XLConnect(using R to edit Excel)
+
+```{r message=F}
+library(readr)
+read_csv()
+read_tsv()
+read_delim() #this is like read.table where you can customize.
+```
+
+```{r}
+library(readxl)
+read_excel("file.xlsx",sheet=1)
+excel_sheets("file.xlsx") #returns names of sheets
+lapply(excel_sheets("file.xlsx"), read_excel, path="file.xlsx")
+
+url <- "http://s3.amazonaws.com/assets.datacamp.com/course/importing_data_into_r/cities.xlsx"
+dest_path <- file.path("~", "local_cities.xlsx") 
+download.file(url, dest_path)
+read_excel(dest_path)
+```
+
+R can also import data from database using library ```DBI```, API and JSON (library ```jsonlite```). It will require to use some SQL or html. 
+
+#Data cleaning
+datacleaning includes checking data type, checking range constrains (possibly error in data entry), handling missing values, unify format etc. 
+
+Confirm Datatype: can use library ```base``` (default loading) or library ```assertive``` to check datatype 
+```{r}
+is.character(); is.numeric(); is.Date(); is.logical(); is.factor(); ..
+library(assertive)
+assert_is_character() ...
+
+df%>%mutate(new_ID=as.factor(ID)) # to change data type.
+```
+
+Check data range: eg, 13th month? 6-star rating? etc. 
+
+```{r}
+df%>%replace(month, month>13, NA)
+df%>%replace(rating, rating>5, 5)
+df%>%filter(as.Date(date)>today)  #call out dates that's in the future
+```
+
+duplicated rows
+```{r}
+summary(duplicated(df)) # returns number of rows that are duplicated
+distinct(df) #delete duplicated
+
+#partial duplication: 
+dup_df <- df %>% count(first_name, last_name) %>% filter(n > 1) #look for rows with the same name
+
+df %>%filter(first_name %in% dup_df$first_name, last_name %in% dup_ids$last_name) #call out those rows
+  
+distinct(df, fist_name, last_name, .keep_all=T) # keep only the first entry of the name combination.
+```
+
+String consistency (e.g. merge EU, europe, Europe, europa from a survey) 
+
+```{r}
+library(stringr)
+
+
+```
