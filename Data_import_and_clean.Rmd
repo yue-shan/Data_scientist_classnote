@@ -90,10 +90,30 @@ df %>%filter(first_name %in% dup_df$first_name, last_name %in% dup_ids$last_name
 distinct(df, fist_name, last_name, .keep_all=T) # keep only the first entry of the name combination.
 ```
 
-String consistency (e.g. merge EU, europe, Europe, europa from a survey) 
+###String consistency (e.g. merge EU, europe, Europe, europa from a survey) 
 
 ```{r}
 library(stringr)
+library(dplyr)
+count(dataframe,a_factor_column) #see if there are factors that need to be combined. 
+str_to_lower()
+str_to_upper()
+str_trim() # remove space
+str_remove(x, ",") #remove all "," in the strings
+str_remove_all("_")
+str_replace()
+str_replace_all(x,"-", "_") #replace - with _
+str_replace_na()
+str_detect(x, "-") #call out the ones with -
+str_length(column) #number of characters/digits
 
+# if youu want to correct typos, use stringdist to find the closest string
+library(fuzzyjoin)
+city <-c("new york", "new yrk", "los angelous", "los angelos", "los angeles")
+correct_city<-c("new york", "los angeles")
+stringdist_left_join(city, correct_city, by=c("city", "correct_city"), method="dl")
 
+#if you  want to collapse several values, use fct_collapse
+library(forcats)
+mutate(new_column= fct_collapse(current_column, Europe=c("EU","Europe"), US=c("America","the United State")))
 ```
