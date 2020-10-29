@@ -1,0 +1,71 @@
+---
+title: "Machine learning"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Supervised learning 
+Supervised learning handles labeled data and mostly used for prediction. THe most simple case would be linear regression, where we have a standard curve, and we use the standard curve to predict experimental results. 
+
+## Linear regression
+```{r}
+library(stats)
+model= lm(formular=Y~X, data=df)
+
+summary(model)
+coef(model)
+residuals(model)  #mean(residuals(model))==0
+df.residuals(model)
+
+SSE= sqrt(sum(residuals(model)^2))
+RMSE= sqrt(sum(residuals(model)^2)/df.residual(model))
+SST=sqrt(sum((y-mean(y))^2))
+
+R^2= 1-SSE/SST = 1- var(e)/var(y) #The percentage of variation in Y that can be explained by the model. 
+
+```
+
+## non-linear regression 
+
+```{r}
+model=glm(y~x1+x2+x3, data=df, family="gaussian") #default
+
+#all types of non-linear regressions are glm, you can specify family: binomial, gaussian, Gamma (inverse), inverse.gaussian, poisson(link = "log"), quasi,quasibinomial,quasipoisson
+
+predict(model, df,type="response") #apply the model to data
+
+# Example 1, use "binomial" regression to make binary prediction. 
+model=glm(y~x1+x2+x3, data=df, family="binomial")
+probability = predict(model, new_df, type="response")
+prediction = ifelse(probability>0.5, 1, 0)
+mean(probability==prediction) #to evaluate how well the model works. 
+
+
+```
+
+### Tree-based regression
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+## classification
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+# Unsupervised learning
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+## clustering
+
+###kmeans
+
+###hieriarch clustering 
+
