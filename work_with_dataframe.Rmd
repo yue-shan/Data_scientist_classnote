@@ -62,7 +62,7 @@ pivot_longer(df, cols=starts_with("Day"), names_to="Day_of_treatment",values_to=
 
 ```apply(x, dimension, function)```can apply a function to a dataframe. dimension=1 applies to rows, dimension=2 applies to columns.
 
-```{r }
+```{r}
 library(plyr)
 apply(df, 2, mean) #same as colMeans(df)
 #apply applies to dataframe, needs to specify row or column
