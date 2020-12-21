@@ -27,34 +27,65 @@ SST=sqrt(sum((y-mean(y))^2))
 R^2= 1-SSE/SST = 1- var(e)/var(y) #The percentage of variation in Y that can be explained by the model. 
 
 ```
+Often we use linear regression to make categorical prediction. In this case, we can turn scatter plot into box plot use the ```cut``` function. 
+```{r}
+x=cut(x, breaks = n) #number of catagory
+```
 
 ## non-linear regression 
 
+Non-linear regression use glm function, in addition to formular and dataframe, we also need to specify the ```family``` of distribution to use. Three common distributions are binomial, gaussian, and Possion. The binomial distribution describes the number of positive outcomes in binary experiments, and it is the “mother” distribution from which the other two distributions can be obtained. The Gaussian distribution can be considered as a special case of the binomial, when the number of tries is sufficiently large. For this reason, the Gaussian distribution applies to a large number of variables, and it is referred to as the normal distribution. The Poisson distribution applies to counting experiments, and it can be obtained as the limit of the binomial distribution when the probability of success is small.
+
+The ```type``` argument in ```predict``` function indicates the type of prediction required. The default is "links", which shows on the scale of the linear predictors-- thus for lm model you don't need to specify the type; the alternative "response" is on the scale of the response variable. Thus for a default binomial model the default predictions are of log-odds (probabilities on logit scale) and type = "response" gives the predicted probabilities. The "terms" option returns a matrix giving the fitted values of each term in the model formula on the linear predictor scale.
+
 ```{r}
-model=glm(y~x1+x2+x3, data=df, family="gaussian") #default
+model=glm(y~x1+x2+x3, data=df, family="gaussian") #gaussian is the default. 
 
 #all types of non-linear regressions are glm, you can specify family: binomial, gaussian, Gamma (inverse), inverse.gaussian, poisson(link = "log"), quasi,quasibinomial,quasipoisson
 
-predict(model, df,type="response") #apply the model to data
+probability=predict(model, df,type="response") #apply the model to data
 
 # Example 1, use "binomial" regression to make binary prediction. 
 model=glm(y~x1+x2+x3, data=df, family="binomial")
 probability = predict(model, new_df, type="response")
-prediction = ifelse(probability>0.5, 1, 0)
-mean(probability==prediction) #to evaluate how well the model works. 
+prediction = ifelse(probability>0.5, 1, 0) #note that the cut-off is chosen arbitrarily and is context dependent. 
+mean(probability==prediction) #to evaluate how well the model works.  
+```
 
+## Tree-based regression (supervised)
+```{r }
 
 ```
 
-### Tree-based regression
-```{r pressure, echo=FALSE}
-plot(pressure)
+#classification
+
+##Clustering (supervised and unsupervised)
+
+cluster are based on the similarity of each samples in the training set. It calculates the distance among all points (a scatter plot). *distance= 1- similarity*.For a scatter plot, we can use the spacial distance of two points. Then from the seed, it uses the closet N neighbors to vote on which cluster a point should belong to. 
+
+```{}
+matrix_height_weight<- (5.5, 120, 5.6, 130, 6, 170, nrow=3)
+dist_hw<-dist(matrix_height_weight, method= 'euclidean')
+#there are also 'baltimore' and 'manhattan' distance. look into hierarchical clustering to find more. 
+#dist() creates a triangular matrix where there is a number for each pair of points in the originall matrix. 
+
+scale(dist_hw) #This would normalize each parameter so that they contribute the same way in the distance calculation. 
 ```
 
-## classification
+Below are some commonly cluster-based methods: 
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+##knn cluster (supervised)
+We have labeled training dataset. First, we would classify the training dataset into classes. Then we would fit new data into these classes. The *knn* cluuster and *decision tree* are two common cluster methods. They are also used in unsupervised learning. 
+
+*knn cluster* 
+The number of claster is assigned, and the seed is chosen randomly. Thus, each run of knn gives a slightly different result. Depends on the final result and graph, you may want to adjust the number of cluster. 
+
+```{r}
+library(class)
+knn(train=training_dataset[-type], test=new_dataset, cl=type)
+#the "type" above is a colomn in training dataset.. The function will assign the cluter for each point instead. 
+
+
 ```
 
 # Unsupervised learning
