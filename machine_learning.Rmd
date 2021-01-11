@@ -59,9 +59,8 @@ mean(probability==prediction) #to evaluate how well the model works.
 
 #classification
 
-##Clustering (supervised and unsupervised)
-
-cluster are based on the similarity of each samples in the training set. It calculates the distance among all points (a scatter plot). *distance= 1- similarity*.For a scatter plot, we can use the spacial distance of two points. Then from the seed, it uses the closet N neighbors to vote on which cluster a point should belong to. 
+#Clustering-based classification (supervised and unsupervised) 
+cluster are based on the similarity of each samples in the training set. It calculates the distance among all points (a scatter plot). *distance= 1- similarity*.Imaging there are two parameters, then each data point can be translate to one point on a scatter plot and we can measure the spacial distance of two points. Distance/cluster based classification can be used in both supervised and unsupervised learning. 
 
 ```{}
 matrix_height_weight<- (5.5, 120, 5.6, 130, 6, 170, nrow=3)
@@ -74,11 +73,28 @@ scale(dist_hw) #This would normalize each parameter so that they contribute the 
 
 Below are some commonly cluster-based methods: 
 
-##knn cluster (supervised)
-We have labeled training dataset. First, we would classify the training dataset into classes. Then we would fit new data into these classes. The *knn* cluuster and *decision tree* are two common cluster methods. They are also used in unsupervised learning. 
+#Supervised cluster
 
-*knn cluster* 
-The number of claster is assigned, and the seed is chosen randomly. Thus, each run of knn gives a slightly different result. Depends on the final result and graph, you may want to adjust the number of cluster. 
+We have labelled training dataset (eg. subtype of a disease for diagnosis) and would like to assign labels. The *knn* cluuster and *decision tree* are two common cluster methods. 
+
+##knn cluster (k nearest neighbour)
+The number of cluster is abitrarily assigned, and the seed is chosen randomly. For each data point, we classify it into one of the cluster based on the location of this point on the scatter plot. For knn method, we use the closest k neighbors to vote on which cluster a point belongs to. k is a number you assigned to the program. When k= 1 then every point will be assigned based on the closest neighbour. A rule of thumb is that use sqrt(total data in training set) as k.
+
+Note that as a distance-based method, knn requires all parameters to be numeric. You'll need to first convert categorical data. Also you should normalize all parameters (eg, height and weight are in different unit) as it will use all parameters to calculate the difference. 
+
+```{r}
+library(class)
+knn(train=df_training[,-type], test=df_test, cl=type, k=1, prob=F) 
+#type is the column that shows the class of each training set; k=1 is default; default prob=F will assign the testing data based on the majority of votes. prob=T will return the propotion of the votes for the winning class in probability.
+predict<-knn(train=df_training, test=df_test, cl=type, k=1, prob=F)
+prob<-attr(predict, "prob")
+
+normalize<-function(x){
+  return((x-min(x))/(max(x)-min(x)))
+}
+
+```
+
 
 ```{r}
 library(class)
@@ -88,15 +104,17 @@ knn(train=training_dataset[-type], test=new_dataset, cl=type)
 
 ```
 
-# Unsupervised learning
+# Unsupervised clustering
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+## kmeans clustering
+
+```{r}
+
 ```
 
-## clustering
-
-###kmeans
-
 ###hieriarch clustering 
+
+
+##PCA clustering
+
 
