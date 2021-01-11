@@ -106,10 +106,24 @@ knn(train=training_dataset[-type], test=new_dataset, cl=type)
 
 # Unsupervised clustering
 
-## kmeans clustering
-
+## kmeans clustering (unsupervised learning)
+For unsupervised learning, the dataset has no labels- for example, you have customer datas, how to you group the customers into different segments? kmeans use the mean value of a number of points position as a "centeroid" and assign points to centeroids. You need to assign the number of clusters  (normally by first plot a scatter plot and look at how many centers are there)
 ```{r}
+library(stats)
+model<-kmeans(df, centers=k, nstart=1)
 
+#To evaluate, we calculate the sum of square distance among each point to the centeroid of the cluster it belongs to. If we don't know what should be the ideal k, use elbow plot to compare:
+library(purrr)
+tot_withinss <- map_dbl(1:10, function(k){
+  model <- kmeans(x = lineup, centers = k) 
+  model$tot.withinss 
+})
+#try k in 1:10 and return the sum of squares.
+elbow_df <- data.frame(
+k = 1:10,
+tot_withinss = tot_withinss)
+ggplot(elbow_df, aes(x = k, y = tot_withinss)) + geom_line()
+#plot, the higher k is the lower the sum is, but we would use the turning point. 
 ```
 
 ###hieriarch clustering 
