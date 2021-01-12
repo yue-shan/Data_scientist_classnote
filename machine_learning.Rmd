@@ -62,7 +62,7 @@ mean(probability==prediction) #to evaluate how well the model works.
 #Clustering-based classification (supervised and unsupervised) 
 cluster are based on the similarity of each samples in the training set. It calculates the distance among all points (a scatter plot). *distance= 1- similarity*.Imaging there are two parameters, then each data point can be translate to one point on a scatter plot and we can measure the spacial distance of two points. Distance/cluster based classification can be used in both supervised and unsupervised learning. 
 
-```{}
+```{r}
 matrix_height_weight<- (5.5, 120, 5.6, 130, 6, 170, nrow=3)
 dist_hw<-dist(matrix_height_weight, method= 'euclidean')
 #there are also 'baltimore' and 'manhattan' distance. look into hierarchical clustering to find more. 
@@ -77,7 +77,7 @@ Below are some commonly cluster-based methods:
 
 We have labelled training dataset (eg. subtype of a disease for diagnosis) and would like to assign labels. The *knn* cluuster and *decision tree* are two common cluster methods. 
 
-##knn cluster (k nearest neighbour)
+##knn cluster (k nearest neighbour, supervised learning)
 The number of cluster is abitrarily assigned, and the seed is chosen randomly. For each data point, we classify it into one of the cluster based on the location of this point on the scatter plot. For knn method, we use the closest k neighbors to vote on which cluster a point belongs to. k is a number you assigned to the program. When k= 1 then every point will be assigned based on the closest neighbour. A rule of thumb is that use sqrt(total data in training set) as k.
 
 Note that as a distance-based method, knn requires all parameters to be numeric. You'll need to first convert categorical data. Also you should normalize all parameters (eg, height and weight are in different unit) as it will use all parameters to calculate the difference. 
@@ -92,17 +92,9 @@ prob<-attr(predict, "prob")
 normalize<-function(x){
   return((x-min(x))/(max(x)-min(x)))
 }
-
 ```
+## decision tree and random forest (supervised learning)
 
-
-```{r}
-library(class)
-knn(train=training_dataset[-type], test=new_dataset, cl=type)
-#the "type" above is a colomn in training dataset.. The function will assign the cluter for each point instead. 
-
-
-```
 
 # Unsupervised clustering
 
@@ -126,9 +118,34 @@ ggplot(elbow_df, aes(x = k, y = tot_withinss)) + geom_line()
 #plot, the higher k is the lower the sum is, but we would use the turning point. 
 ```
 
-###hieriarch clustering 
+##Hierarchical clustering (unsupervised)
+Hierarchical clustering is a distance-based unsupervised learning method. Similar to kmeans, we also use a scatter plot to visualize a matrix, and use the relative position of each point to cluster. An example would be a phylogenetic tree. First, we use *dist* function to calculate the distance of each point, then use *hclust* to generate a tree. Finally we can cut the tree to generate clusters. 
 
+```{r}
+dist_player <- dist(player, method = 'euclidean') 
+#euclidean caulculates the distance between the two points. "jaccard" method can be used for categoriical data (T or F; A,B,C etc)
+hc_player <- hclust(dist_player, method = 'complete')
+# Method could me complete, single, average or centroid. "Complete" use pairwise similarity between all observations in cluster 1 and 2 and use the largest of similarities; "single" use the smallest similarities and average use the average similarities. Centroid find the centroid of each cluster. "Single" turns to create unbalanced tree and it's good to use it to call out outliers in a dataset. "Complete" creates most balanced tree and is most common. 
+plot(hc_player) #can draw a tree
+cutree(hc_player, h=6)
+cutree(hc_player, k=3)
+#cut tree by height (h, the distance) or by number of clusters (k) 
+```
 
-##PCA clustering
+##PCA (unsupervised)
+Principle Component Analysis is an unsupervised learning method based on dimensionality reduction. It is a specific way of singular value decomposition (SVD). Often we have n variables that are not *independent*. PCA creates a new set of variable << n that are independent of each other.
+
+We don't know the relationship between old n variables (eg, age, gender, height, weight, etc) and new set oof variables (Component 1,2,3, etc). We do know the percentage of each component. 
+
+```{r}
+pr.df<- prcomp(df, scale=TRUE, center=TRUE)
+summary(pr.df) #a table of proportion of variance
+biplot(pr.df) #shows how each of the original variable locates based on new components
+
+#to evaluate how many components are important to interpret the data, we can use scree plot variance explained for each principal component 
+pr.var <- pr.df$sdev^2
+pve <- pr.var / sum(pr.var)
+plot(pve)
+```
 
 
